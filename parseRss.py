@@ -5,7 +5,7 @@ import xmltodict
 import pandas as pd
 import re
 import os
-
+import datetime
 
 # build list of links to parse from:
 def build_company_list():
@@ -35,6 +35,7 @@ def parse_link(entrylist, list_index):
 
     # get company name and CIK
     companyname = soup.find('span', class_='companyName').contents[0]
+    companyname = re.sub(' \(Filer\) ', '', companyname)
     contents = soup.find('span', class_='companyName').contents[3]
     companyCIK = re.sub('<.*?>', '', str(contents))
     companyCIK = re.sub(' \(.*?\)', '', companyCIK)
@@ -77,6 +78,7 @@ def parse_link(entrylist, list_index):
     df['companyCIK'] = companyCIK
     df['reportDate'] = reportDate
     df['filingDate'] = filingDate
+    df.replace(r'\s+|\\n', ' ', regex=True, inplace=True)
     return df
 
 
@@ -94,6 +96,7 @@ def write_to_file(clist, filename):
         df.to_csv(filename, header=False, index=False, mode='a', sep='^')
 
 
+time_now = datetime.datetime.now().strftime('%Y%m%d')
 companylist = build_company_list()
-write_to_file(companylist, 'output.csv')
+write_to_file(companylist, '{}.csv'.format(time_now))
 
