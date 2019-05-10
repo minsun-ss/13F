@@ -35,7 +35,7 @@ def parse_link(entrylist, list_index):
 
     # get company name and CIK
     companyname = soup.find('span', class_='companyName').contents[0]
-    companyname = re.sub(' \(Filer\) ', '', companyname)
+    companyname = re.sub(' \(Filer\)[\r\n]+', '', companyname)
     contents = soup.find('span', class_='companyName').contents[3]
     companyCIK = re.sub('<.*?>', '', str(contents))
     companyCIK = re.sub(' \(.*?\)', '', companyCIK)
