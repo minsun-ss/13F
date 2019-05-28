@@ -7,19 +7,19 @@ import re
 import os
 import datetime
 
-# build list of links to parse from:
+
 def build_company_list():
     startnum = 0
     entryamt = 100
-    url = 'https://www.sec.gov/cgi-bin/browse-edgar?action=getcurrent&CIK=&type=13f-hr&company=&dateb=&owner=include&start={}&count={}&output=atom'.format(
-        startnum, entryamt)
+    [url = 'https://www.sec.gov/cgi-bin/browse-edgar?action=getcurrent&CIK=&type=13f-hr&company=&\dateb=&owner' \
+           '=\include&start={}&count={}&output=atom'.format(startnum, entryamt)]
     d = feedparser.parse(url)
     entrylist = d['entries']
     entries = d['entries']
 
     while len(entries) == 100:
-        url = 'https://www.sec.gov/cgi-bin/browse-edgar?action=getcurrent&CIK=&type=13f-hr&company=&dateb=&owner=include&start={}&count={}&output=atom'.format(
-            startnum, entryamt)
+        [url = 'https://www.sec.gov/cgi-bin/browse-edgar?action=getcurrent&CIK=&type=13f-hr&company=&dateb=&owner=' \
+               'include&start={}&count={}&output=atom'.format(startnum, entryamt)]
         d = feedparser.parse(url)
         entries = d['entries']
         entrylist = entrylist + d['entries']
@@ -28,8 +28,17 @@ def build_company_list():
 
 
 def parse_link(entrylist, list_index):
+    '''
+
+    :param entrylist:
+    :param list_index:
+    :return: dataframe
+
+    Takes a list of urls containing 13f filings, opens the xml filing with securities from each url, and collects them.
+    Returns a pandas dataframe containing the information.
+    '''
     url = entrylist[list_index]['link']
-    print(list_index, url)
+    print('Working on {}, {}'.format(list_index, url))
     page = urllib.request.urlopen(url).read()
     soup = BeautifulSoup(page, 'html.parser')
 
@@ -49,7 +58,7 @@ def parse_link(entrylist, list_index):
     for link in soup.find_all('a'):
         securities_url = link.get('href')
         text = link.contents[0]
-        if '.xml' in securities_url and 'xml' in text and 'primary_doc' not in securities_url:
+        if '.xml' in securities_url.lower() and 'xml' in text.lower() and 'primary_doc' not in securities_url:
             securities_list = securities_url
 
     # build proper url
@@ -84,6 +93,15 @@ def parse_link(entrylist, list_index):
 
 # go through each and every company item and then dump into csv file
 def write_to_file(clist, filename):
+    '''
+    :param clist:
+    :param filename:
+    :return:
+
+    Takes the list of securities and prints to csv (labeled filename). Includes a header at the very beginning. The
+    company list is generated from build_company_list(). The csv is delimited by ^ as both commas and semi colons
+    are common in text.
+    '''
     for i in range(len(clist)):
         df = parse_link(clist, i)
         df.drop(columns=['shrsOrPrnAmt', 'votingAuthority'], inplace=True)
@@ -96,7 +114,8 @@ def write_to_file(clist, filename):
         df.to_csv(filename, header=False, index=False, mode='a', sep='^')
 
 
-time_now = datetime.datetime.now().strftime('%Y%m%d')
-companylist = build_company_list()
-write_to_file(companylist, '{}.csv'.format(time_now))
+def get_list_today():
+    time_now = datetime.datetime.now().strftime('%Y%m%d')
+    companylist = build_company_list()
+    write_to_file(companylist, 'data/{}.csv'.format(time_now))
 
