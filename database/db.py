@@ -5,8 +5,8 @@ from datetime import datetime, timedelta
 import os
 import traceback
 
-DB_URI = os.environ['MONGO_DB_URI']
-#mongo 'mongodb+srv://mongodb:04LdXyxTaB7s@cluster0-9nqth.mongodb.net/test'
+#DB_URI = os.environ['MONGO_DB_URI']
+DB_URI = 'mongodb+srv://mongodb:04LdXyxTaB7s@cluster0-9nqth.mongodb.net/test'
 
 def get_db():
     '''
@@ -95,7 +95,19 @@ def delete_report(cik, reportdate, filingdate):
     Deletes an entire report from the database. Takes in CIK, report date, and filing date.
     :return: response
     '''
-    pass
+    # build pipeline
+    security_match = {
+        'companyCIK': cik,
+        'reportDate': reportdate,
+        'filingDate': filingdate
+    }
+
+    response = db.securities.delete_many(
+        security_match
+    )
+    print(response.deleted_count)
+    return response.deleted_count
+
 
 def delete_old_securities(numdays=7):
     '''
@@ -113,7 +125,7 @@ def delete_old_securities(numdays=7):
     }
 
     try:
-        response = db.securities.delete(
+        response = db.securities.delete_many(
             security_match
         )
         return response.deleted_count
@@ -151,5 +163,4 @@ def add_all_csv():
                 add_item(row)
             except Exception:
                 traceback.print.exc()
-
 
