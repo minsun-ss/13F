@@ -7,8 +7,7 @@ import pytest
 import os
 from pymongo import MongoClient
 
-#DB_URI = os.environ['MONGO_DB_URI']
-DB_URI = 'mongodb+srv://mongodb:04LdXyxTaB7s@cluster0-9nqth.mongodb.net/test'
+DB_URI = os.environ['MONGO_DB_URI']
 
 fake_report = {
     'companyCIK': '12345',

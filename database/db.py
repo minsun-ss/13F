@@ -5,8 +5,7 @@ from datetime import datetime, timedelta
 import os
 import traceback
 
-#DB_URI = os.environ['MONGO_DB_URI']
-DB_URI = 'mongodb+srv://mongodb:04LdXyxTaB7s@cluster0-9nqth.mongodb.net/test'
+DB_URI = os.environ['MONGO_DB_URI']
 
 def get_db():
     '''
@@ -144,7 +143,7 @@ def clean_data_folder():
         filepath = f'data/{file}'
         try:
             os.remove(filepath)
-            print(f'Removed {filepath}')
+            print(f'Removed {filepath}...')
         except Exception:
             traceback.print.exc()
 

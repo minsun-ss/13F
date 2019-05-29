@@ -13,7 +13,7 @@ def build_company_list():
     '''
     Takes the RSS list of most recent 13F filings from SEC edgar and grabs the URL. Pages through for all the filings.
     There's usually some overlap between yesterday and today (and edits to old reports).
-    :return:
+    :return: list of urls
     '''
     try:
         startnum = 0
@@ -100,7 +100,6 @@ def parse_link(entrylist, list_index):
     return df
 
 
-# go through each and every company item and then dump into csv file
 def write_to_file(clist, filename):
     '''
     :param clist:
@@ -124,8 +123,14 @@ def write_to_file(clist, filename):
 
 
 def get_list_today():
-    time_now = datetime.datetime.now().strftime('%Y%m%d')
-    companylist = build_company_list()
-    write_to_file(companylist, 'data/{}.csv'.format(time_now))
-
-get_list_today()
+    '''
+    Pull the current days rss feed list and writes to csv
+    :return:
+    '''
+    try:
+        time_now = datetime.datetime.now().strftime('%Y%m%d')
+        print(f'Getting list for {time_now}...')
+        companylist = build_company_list()
+        write_to_file(companylist, 'data/{}.csv'.format(time_now))
+    except Exception:
+        traceback.print.exc()
