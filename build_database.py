@@ -1,10 +1,12 @@
 from pymongo import MongoClient
 from pymongo.write_concern import WriteConcern
 import pandas as pd
-import datetime
+from datetime import datetime, timedelta
 import os
+import traceback
 
 DB_URI = os.environ['MONGO_DB_URI']
+#mongo 'mongodb+srv://mongodb:04LdXyxTaB7s@cluster0-9nqth.mongodb.net/test'
 
 def get_db():
     '''
@@ -78,7 +80,7 @@ def add_item(dataseries):
         {'$set': security_doc},
         upsert=True)
 
-    # print out response message if there is an overwrite
+    # print out response message only if there is an overwrite
     if response['updatedExisting']:
         print(response)
 
@@ -91,15 +93,51 @@ def delete_securities():
     :return:
     '''
 
-    # get today's date
-    todaydate = datetime.datetime.now().strftime('%Y-%m-%d')
+    # get today's date and subtract 7 days from it
+    timecutoff = (datetime.now() - timedelta(days=7)).strftime('%Y-%m-%d')
 
-    response = ''
+    # build pipeline
+    security_match = {
+        'filingDate': {'$lt': timecutoff}
+    }
+
+    response = db.securities.find_one(
+        {security_match}
+    )
+    print(response)
     return response
 
-def addNewItems():
-    df = pd.read_csv('data/20190510.csv', sep='^')
-    for row in df.itertuples():
-        add_item(row)
+def clean_data_folder():
+    '''
+    Purges the data folder of all .csv files for space issues
+    '''
+    directory = os.fsencode('data')
+    for file in os.listdir(directory):
+        file = os.fsdecode(file)
+        filepath = f'data/{file}'
+        try:
+            os.remove(filepath)
+            print(f'Removed {filepath}')
+        except Exception:
+            traceback.print.exc()
+
+def add_all_csv():
+    '''
+    Adds all data files located in the /data folder to MongoDB cluster. Assumes all files in the folder to be
+    propertly formatted .csv files.
+    :return:
+    '''
+    directory = os.fsencode('data')
+    for file in os.listdir(directory):
+        file = os.fsdecode(file)
+        filepath = f'data/{file}'
+        print(f'Working on {filepath}...')
+        df = pd.read_csv(filepath, sep='^')
+        for row in df.itertuples():
+            try:
+                add_item(row)
+            except Exception:
+                traceback.print.exc()
+
 
 delete_securities()

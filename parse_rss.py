@@ -11,15 +11,15 @@ import datetime
 def build_company_list():
     startnum = 0
     entryamt = 100
-    [url = 'https://www.sec.gov/cgi-bin/browse-edgar?action=getcurrent&CIK=&type=13f-hr&company=&\dateb=&owner' \
-           '=\include&start={}&count={}&output=atom'.format(startnum, entryamt)]
+    url = 'https://www.sec.gov/cgi-bin/browse-edgar?action=getcurrent&CIK=&type=13f-hr&company=&\dateb=&owner' \
+          '=\include&start={}&count={}&output=atom'.format(startnum, entryamt)
     d = feedparser.parse(url)
     entrylist = d['entries']
     entries = d['entries']
 
     while len(entries) == 100:
-        [url = 'https://www.sec.gov/cgi-bin/browse-edgar?action=getcurrent&CIK=&type=13f-hr&company=&dateb=&owner=' \
-               'include&start={}&count={}&output=atom'.format(startnum, entryamt)]
+        url = 'https://www.sec.gov/cgi-bin/browse-edgar?action=getcurrent&CIK=&type=13f-hr&company=&dateb=&owner' \
+              '=include&start={}&count={}&output=atom'.format(startnum, entryamt)
         d = feedparser.parse(url)
         entries = d['entries']
         entrylist = entrylist + d['entries']
@@ -119,3 +119,4 @@ def get_list_today():
     companylist = build_company_list()
     write_to_file(companylist, 'data/{}.csv'.format(time_now))
 
+get_list_today()
