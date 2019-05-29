@@ -93,7 +93,7 @@ def add_item(dataseries):
 def delete_report(cik, reportdate, filingdate):
     '''
     Deletes an entire report from the database. Takes in CIK, report date, and filing date.
-    :return: response
+    :return: number of documents deleted from the MongoDB server
     '''
     # build pipeline
     security_match = {
