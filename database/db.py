@@ -102,11 +102,13 @@ def delete_report(cik, reportdate, filingdate):
         'filingDate': filingdate
     }
 
-    response = db.securities.delete_many(
-        security_match
-    )
-    print(response.deleted_count)
-    return response.deleted_count
+    try:
+        response = db.securities.delete_many(
+            security_match
+        )
+        return response.deleted_count
+    except Exception:
+        traceback.print.exc()
 
 
 def delete_old_securities(numdays=7):
