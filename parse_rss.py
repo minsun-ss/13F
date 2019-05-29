@@ -6,36 +6,45 @@ import pandas as pd
 import re
 import os
 import datetime
+import traceback
 
 
 def build_company_list():
-    startnum = 0
-    entryamt = 100
-    url = 'https://www.sec.gov/cgi-bin/browse-edgar?action=getcurrent&CIK=&type=13f-hr&company=&\dateb=&owner' \
-          '=\include&start={}&count={}&output=atom'.format(startnum, entryamt)
-    d = feedparser.parse(url)
-    entrylist = d['entries']
-    entries = d['entries']
-
-    while len(entries) == 100:
-        url = 'https://www.sec.gov/cgi-bin/browse-edgar?action=getcurrent&CIK=&type=13f-hr&company=&dateb=&owner' \
-              '=include&start={}&count={}&output=atom'.format(startnum, entryamt)
+    '''
+    Takes the RSS list of most recent 13F filings from SEC edgar and grabs the URL. Pages through for all the filings.
+    There's usually some overlap between yesterday and today (and edits to old reports).
+    :return:
+    '''
+    try:
+        startnum = 0
+        entryamt = 100
+        url = 'https://www.sec.gov/cgi-bin/browse-edgar?action=getcurrent&CIK=&type=13f-hr&company=&\dateb=&owner' \
+              '=\include&start={}&count={}&output=atom'.format(startnum, entryamt)
         d = feedparser.parse(url)
+        entrylist = d['entries']
         entries = d['entries']
-        entrylist = entrylist + d['entries']
-        startnum += 100
-    return entrylist
+
+        while len(entries) == 100:
+            url = 'https://www.sec.gov/cgi-bin/browse-edgar?action=getcurrent&CIK=&type=13f-hr&company=&dateb=&owner' \
+                  '=include&start={}&count={}&output=atom'.format(startnum, entryamt)
+            d = feedparser.parse(url)
+            entries = d['entries']
+            entrylist = entrylist + d['entries']
+            startnum += 100
+        return entrylist
+    except Exception:
+        traceback.print.exc()
 
 
 def parse_link(entrylist, list_index):
     '''
-
     :param entrylist:
     :param list_index:
     :return: dataframe
 
     Takes a list of urls containing 13f filings, opens the xml filing with securities from each url, and collects them.
-    Returns a pandas dataframe containing the information.
+    Returns a pandas dataframe containing the securities holdings. Appends some other identifying information to the
+    securities list (companyCIK, company, reporting and filing date).
     '''
     url = entrylist[list_index]['link']
     print('Working on {}, {}'.format(list_index, url))
@@ -107,7 +116,7 @@ def write_to_file(clist, filename):
         df.drop(columns=['shrsOrPrnAmt', 'votingAuthority'], inplace=True)
 
         if os.path.isfile(filename):
-            pass
+            pass # if it exists, it's assumed there's a header implemented already
         else:
             pd.DataFrame(df.columns).transpose().to_csv(filename, header=False, index=False, mode='a', sep='^')
 
