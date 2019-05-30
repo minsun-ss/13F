@@ -28,6 +28,7 @@ response = db.securities.find(
     {'companyCIK': 1, 'companyName': 1, 'cusip': 1, 'nameOfIssuer': 1, 'value': 1, '_id': 0}
 )
 
+# build out the dataframes used for the visualization
 df = pd.DataFrame(list(response))
 companies = df.groupby('companyName')['value'].sum().sort_values(ascending=True).reset_index()
 securities = df.groupby('nameOfIssuer')['value'].sum().sort_values(ascending=True).reset_index()
@@ -181,8 +182,6 @@ app.layout = serve_layout
     [Input('company_name_dropdown', 'value')]
 )
 def update_companies(selected):
-    print(selected)
-
     return build_company_figure(selected), build_security_figure(selected)
 
 if __name__ == '__main__':
