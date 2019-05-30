@@ -5,7 +5,7 @@ dash-core-components==0.44.0
 dash-html-components==0.14.0
 dash-renderer==0.20.0
 dash-table==3.6.0
-dnspython=1.16.0
+dnspython==1.16.0
 feedparser==5.2.1
 Flask==1.0.2
 Flask-Bcrypt==0.7.1
