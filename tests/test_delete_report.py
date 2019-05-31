@@ -1,5 +1,5 @@
 '''
-Test file for database methodsin db.py
+Test file for database methods in db.py
 '''
 
 import database.db
@@ -31,3 +31,11 @@ def test_delete_report():
     db.securities.insert_one(fake_report)
     response = database.db.delete_report('12345', '2019-01-01', '2019-01-01')
     assert (response == 1)
+
+@pytest.mark.delete
+def test_delete_old_data():
+    # first add comment to delete
+    db.securities.insert_one(fake_report)
+    database.db.delete_old_securities()
+    response = db.securities.find(fake_report)
+    assert (response.count() == 0)
