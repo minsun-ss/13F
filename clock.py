@@ -18,9 +18,5 @@ def scheduled_job():
     print('This job is run every weekday day at around 5 PM.')
     sys.stdout.flush()
 
-@sched.scheduled_job('interval', minutes=1)
-def timed_job():
-    print('Does this work?')
-    sys.stdout.flush()
 
 sched.start()
