@@ -7,7 +7,7 @@ import sys
 
 logging.basicConfig(stream=sys.stdout, level=logging.DEBUG)
 
-sched = BlockingScheduler(timezone=utc)
+sched = BlockingScheduler(timezone='utc')
 q = Queue(connection=conn)
 
 
