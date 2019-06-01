@@ -12,7 +12,7 @@ q = Queue(connection=conn)
 
 
 # schedule a job monday to friday, at 5 PM
-@sched.cron_scheduler(day_of_week='mon-fri', hour=21)
+@sched.scheduled_job('cron', day_of_week='mon-fri', hour=21)
 def scheduled_job():
     q.enqueue(dailyetl.everyday())
     print('This job is run every weekday day at around 5 PM.')
