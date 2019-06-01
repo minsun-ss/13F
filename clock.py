@@ -4,6 +4,7 @@ from worker import conn
 import dailyetl
 import logging
 import sys
+
 logging.basicConfig(stream=sys.stdout, level=logging.DEBUG)
 
 sched = BlockingScheduler(timezone=utc)
@@ -16,4 +17,8 @@ def scheduled_job():
     print('This job is run every weekday day at around 5 PM.')
     sys.stdout.flush()
 
+@sched.interval_schedule(minutes=1)
+def timed_job():
+    print('Does this work?')
+    sys.stdout.flush()
 sched.start()
