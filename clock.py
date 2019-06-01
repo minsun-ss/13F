@@ -10,8 +10,9 @@ logging.basicConfig(stream=sys.stdout, level=logging.DEBUG)
 sched = BlockingScheduler(timezone=utc)
 q = Queue(connection=conn)
 
+
 # schedule a job monday to friday, at 5 PM
-@sched.scheduled_job('cron', day_of_week='mon-fri', hour=21)
+@sched.cron_scheduler(day_of_week='mon-fri', hour=21)
 def scheduled_job():
     q.enqueue(dailyetl.everyday())
     print('This job is run every weekday day at around 5 PM.')
@@ -21,4 +22,5 @@ def scheduled_job():
 def timed_job():
     print('Does this work?')
     sys.stdout.flush()
+
 sched.start()
