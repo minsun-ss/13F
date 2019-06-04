@@ -24,7 +24,7 @@ db = get_db()
 # get query to pick
 time_now = datetime.now().strftime('%Y-%m-%d')
 response = db.securities.find(
-    {'reportDate': '2019-03-31'},
+    {},
     {'companyCIK': 1, 'companyName': 1, 'cusip': 1, 'nameOfIssuer': 1, 'value': 1, '_id': 0}
 )
 

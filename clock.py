@@ -24,5 +24,4 @@ def scheduled_ping():
     print(response)
     sys.stdout.flush()
 
-
 sched.start()
