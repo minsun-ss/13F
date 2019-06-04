@@ -4,6 +4,7 @@ from worker import conn
 import dailyetl
 import logging
 import sys
+import os
 logging.basicConfig(stream=sys.stdout, level=logging.DEBUG)
 
 sched = BlockingScheduler(timezone=utc)
@@ -15,5 +16,11 @@ def scheduled_job():
     q.enqueue(dailyetl.everyday())
     print('This job is run every weekday day at around 5 PM.')
     sys.stdout.flush()
+@sched.scheduled_job('interval', minute=30)
+def scheduled_ping():
+    hostname = 'minsun-13f.herokuapp.com'
+    response = os.system('ping -c 1' + hostname)
+    print(response)
+
 
 sched.start()

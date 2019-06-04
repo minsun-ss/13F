@@ -6,3 +6,5 @@ def everyday():
     database.db.clean_data_folder()
     database.parse_rss.get_list_today()
     database.db.add_all_csv()
+
+everyday()
