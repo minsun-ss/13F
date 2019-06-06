@@ -17,7 +17,7 @@ def scheduled_job():
     print('This job is run every weekday day at around 5 PM.')
     sys.stdout.flush()
 
-@sched.scheduled_job('interval', minute=30)
+@sched.scheduled_job('interval', minutes=30)
 def scheduled_ping():
     hostname = 'minsun-13f.herokuapp.com'
     response = os.system('ping -c 1' + hostname)
