@@ -4,7 +4,8 @@ from worker import conn
 import dailyetl
 import logging
 import sys
-import os
+import requests
+
 logging.basicConfig(stream=sys.stdout, level=logging.DEBUG)
 
 sched = BlockingScheduler(timezone='utc')
@@ -20,7 +21,7 @@ def scheduled_job():
 @sched.scheduled_job('interval', minutes=30)
 def scheduled_ping():
     hostname = 'minsun-13f.herokuapp.com'
-    response = os.system('ping -c 1' + hostname)
+    response = requests.get(url=hostname)
     print(response)
     sys.stdout.flush()
 
