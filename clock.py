@@ -20,7 +20,7 @@ def scheduled_job():
 
 @sched.scheduled_job('interval', minutes=30)
 def scheduled_ping():
-    hostname = 'minsun-13f.herokuapp.com'
+    hostname = 'https://minsun-13f.herokuapp.com'
     response = requests.get(url=hostname)
     print(response)
     sys.stdout.flush()
