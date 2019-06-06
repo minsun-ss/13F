@@ -185,4 +185,4 @@ def update_companies(selected):
     return build_company_figure(selected), build_security_figure(selected)
 
 if __name__ == '__main__':
-    app.run_server(debug=True)
+    app.run_server()
