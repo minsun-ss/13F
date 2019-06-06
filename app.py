@@ -152,7 +152,7 @@ def build_security_figure(selected):
 
 def serve_layout():
     return html.Div(children=[
-        html.H5(children='13F-H Securities Holdings, Last 7 Days of Filings - see http://www.stuffofminsun.com'),
+        html.H1(children='13F-H Securities Holdings, Last 7 Days of Filings - see http://www.stuffofminsun.com'),
         html.Div(children=[
             html.Div(children=[
                 dcc.Dropdown(id='company_name_dropdown',
