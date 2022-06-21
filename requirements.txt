@@ -12,7 +12,7 @@ Flask-Bcrypt==0.7.1
 Flask-Compress==1.4.0
 Flask-Cors==3.0.7
 Flask-JWT-Extended==3.18.2
-numpy==1.11.3
+numpy==1.22.0
 pandas==0.23.4
 pymongo==3.7.1
 redis==3.2.1
